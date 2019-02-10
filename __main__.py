@@ -1,6 +1,8 @@
 import os
 import sys
+import time
 
+import schedule
 from .wrappers.open_weather import OpenWeather
 from .wrappers.twilio import Twilio
 
@@ -27,6 +29,11 @@ def main():
     twilio = Twilio()
     twilio.set_api_key(twilio_api_key)
 
+    # Set up cron to perform job every day at 8 AM
+    schedule.every().day.at("08:00").do(lambda: print("hello world"))
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == '__main__':
     main()
