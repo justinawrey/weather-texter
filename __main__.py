@@ -26,7 +26,6 @@ def main():
     twilio.set_api_key(twilio_api_key)
 
     forecast = weather.get_5_day_forecast("vancouver", "ca")
-    pprint.pprint(forecast)
 
     # Set up cron to perform job every day at 8 AM
     schedule.every().day.at("08:00").do(lambda: print("hello world"))

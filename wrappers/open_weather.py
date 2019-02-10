@@ -1,5 +1,4 @@
 import requests
-import pprint
 import datetime
 
 def unix_to_pst(utc_time):
