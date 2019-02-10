@@ -6,20 +6,15 @@ import schedule
 from .wrappers.open_weather import OpenWeather
 from .wrappers.twilio import Twilio
 
+
 def get_api_keys():
-    keys = ()
-    for item in ('open_weather_api_key', 'twilio_api_key'):
-        key = os.environ.get(item)
-        if key:
-           keys += (key,)
-        else:
-            print("missing enviroment variable: {}".format(item))
-            sys.exit()
-    
-    return keys
+    return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key'))
 
 def main():
     open_weather_api_key, twilio_api_key = get_api_keys()
+    if not (open_weather_api_key and twilio_api_key):
+        print("missing api keys")
+        sys.exit()
 
     # Set up OpenWeather wrapper
     weather = OpenWeather() 
