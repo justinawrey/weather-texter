@@ -6,7 +6,6 @@ import schedule
 from .wrappers.open_weather import OpenWeather
 from .wrappers.twilio import Twilio
 
-
 def get_api_keys():
     return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key'))
 
