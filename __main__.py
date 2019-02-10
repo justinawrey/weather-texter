@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import pprint
 
 import schedule
 import requests
@@ -12,6 +11,7 @@ def get_api_keys():
     return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key'))
 
 def main():
+    # Check that api keys are set via environment
     open_weather_api_key, twilio_api_key = get_api_keys()
     if not (open_weather_api_key and twilio_api_key):
         print("missing api keys")
@@ -21,14 +21,18 @@ def main():
     weather = OpenWeather() 
     weather.set_api_key(open_weather_api_key)
 
-    # Set up Twilio wrapper
+    # Set up Twilio wrapper and register recipients to receive weather updates
     twilio = Twilio()
     twilio.set_api_key(twilio_api_key)
+    twilio.register_recipient("+16048457579")
 
-    forecast = weather.get_5_day_forecast("vancouver", "ca")
+    # Define the cron job to be ran
+    def send_forecast():
+        forecast = weather.get_5_day_forecast("vancouver", "ca")
+        twilio.send_data(forecast)
 
     # Set up cron to perform job every day at 8 AM
-    schedule.every().day.at("08:00").do(lambda: print("hello world"))
+    schedule.every().day.at("08:00").do(send_forecast)
     while True:
         schedule.run_pending()
         time.sleep(1)
