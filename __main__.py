@@ -31,8 +31,9 @@ def main():
         forecast = weather.get_5_day_forecast("vancouver", "ca")
         twilio.send_data(forecast)
 
-    # Set up cron to perform job every day at 8 AM
+    # Set up cron to perform job every day at 8 AM and 10 PM
     schedule.every().day.at("08:00").do(send_forecast)
+    schedule.every().day.at("22:00").do(send_forecast)
     while True:
         schedule.run_pending()
         time.sleep(1)
