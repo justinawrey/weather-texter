@@ -7,6 +7,71 @@ import requests
 from .wrappers.open_weather import OpenWeather
 from .wrappers.twilio import Twilio
 
+def create_message(weather_id, weather_str, day, temp):
+    if weather_id >= 801:
+        return \
+"""          
+     .--.    {}
+  .-(    ).  {}
+ (___.__)__) {}°C
+""" \
+.format(day, weather_str, temp)
+
+    elif weather_id >= 800:
+        return \
+"""    \   /    
+     .-.     {}
+  ― (   ) ―  {}
+     `-’     {}°C
+    /   \ """ \
+.format(day, weather_str, temp)
+ 
+    elif weather_id >= 700:
+        return \
+""" 
+ - _ - _ -   {}
+ _ - _ - _   {}
+ - _ - _ -   {}°C
+""" \
+.format(day, weather_str, temp)
+
+    elif weather_id >= 600:
+        return \
+"""     .-.     
+    (   ).   {}
+   (___(__)  {}
+   * * * *   {}°C
+  * * * *""" \
+.format(day, weather_str, temp)
+
+    elif weather_id >= 500:
+        return  \
+"""     .-.     
+    (   ).   {}
+   (___(__)  {}
+   ‚‘‚‘‚‘‚‘  {}°C
+   ‚‘‚‘‚‘‚‘""" \
+.format(day, weather_str, temp)
+        
+    elif weather_id >= 300:
+        return \
+"""     .-.     
+    (   ).   {}
+   (___(__)  {}
+    ‘ ‘ ‘ ‘  {}°C
+   ‘ ‘ ‘ ‘""" \
+.format(day, weather_str, temp)
+
+
+    elif weather_id >= 200:
+        return \
+"""     .-.     
+    (   ).   {}
+   (___(__)  {}
+     /_ /    {}°C
+      //""" \
+.format(day, weather_str, temp)
+
 def get_api_keys():
     return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key'))
 
@@ -28,8 +93,9 @@ def main():
 
     # Define the cron job to be ran
     def send_forecast():
-        forecast = weather.get_5_day_forecast("vancouver", "ca")
-        twilio.send_data(forecast)
+        messages = '\n'.join([create_message(*day_forecast) 
+            for day_forecast in weather.get_5_day_forecast("vancouver", "ca")])
+        twilio.send_data(messages)
 
     # Set up cron to perform job every day at 8 AM and 10 PM
     schedule.every().day.at("08:00").do(send_forecast)
