@@ -62,7 +62,6 @@ def create_message(weather_id, weather_str, day, temp):
    ‘ ‘ ‘ ‘""" \
 .format(day, weather_str, temp)
 
-
     elif weather_id >= 200:
         return \
 """     .-.     
