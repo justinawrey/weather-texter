@@ -72,12 +72,12 @@ def create_message(weather_id, weather_str, day, temp):
 .format(day, weather_str, temp)
 
 def get_api_keys():
-    return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key'))
+    return (os.environ.get(item) for item in ('open_weather_api_key', 'twilio_api_key', 'twilio_acc_sid'))
 
 def main():
     # Check that api keys are set via environment
-    open_weather_api_key, twilio_api_key = get_api_keys()
-    if not (open_weather_api_key and twilio_api_key):
+    open_weather_api_key, twilio_api_key, twilio_acc_sid = get_api_keys()
+    if not (open_weather_api_key and twilio_api_key and twilio_acc_sid):
         print("missing api keys")
         sys.exit()
 
@@ -88,6 +88,7 @@ def main():
     # Set up Twilio wrapper and register recipients to receive weather updates
     twilio = Twilio()
     twilio.set_api_key(twilio_api_key)
+    twilio.set_acc_sid(twilio_acc_sid)
     twilio.register_recipient("+16048457579")
 
     # Define the cron job to be ran
@@ -98,7 +99,7 @@ def main():
 
     # Set up cron to perform job every day at 8 AM and 10 PM
     schedule.every().day.at("08:00").do(send_forecast)
-    schedule.every().day.at("22:00").do(send_forecast)
+    schedule.every().day.at("19:45").do(send_forecast)
     while True:
         schedule.run_pending()
         time.sleep(1)
